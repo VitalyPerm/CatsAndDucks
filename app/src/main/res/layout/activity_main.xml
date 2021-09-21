@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
     <ImageView
-        android:id="@+id/pic"
+        android:id="@+id/iv_pic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,9 +19,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/pic"
-        app:layout_constraintStart_toStartOf="@id/pic"
-        app:layout_constraintTop_toBottomOf="@id/pic">
+        app:layout_constraintEnd_toEndOf="@id/iv_pic"
+        app:layout_constraintStart_toStartOf="@id/iv_pic"
+        app:layout_constraintTop_toBottomOf="@id/iv_pic">
         <Button
             android:id="@+id/btn_show_cat"
             android:layout_width="wrap_content"

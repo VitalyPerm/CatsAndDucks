@@ -2,4 +2,5 @@
     <string name="app_name">CatsAndDucks</string>
     <string name="show_cat">Показать котика</string>
     <string name="show_duck">Показать утку</string>
+    <string name="pic_saved">Фотография сохранена</string>
 </resources>
