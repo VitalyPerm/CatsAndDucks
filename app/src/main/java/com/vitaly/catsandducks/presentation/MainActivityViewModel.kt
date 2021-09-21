@@ -4,8 +4,6 @@ import android.app.Application
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.vitaly.catsandducks.R
 import com.vitaly.catsandducks.data.Service
@@ -17,15 +15,19 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-    lateinit var compositeDisposable: CompositeDisposable
+    private lateinit var compositeDisposable: CompositeDisposable
     private var doubleClickLastTime = 0L
+    var lastPicUrl: String? = null
     fun loadCat(image: ImageView, baseUrl: String) {
         compositeDisposable = CompositeDisposable()
         compositeDisposable.add(
             createService(baseUrl).getCat()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe { response -> onResponse(response.url, image) })
+                .subscribe { response ->
+                    onResponse(response.url, image)
+                    lastPicUrl = response.url
+                })
     }
 
     fun loadDuck(image: ImageView, baseUrl: String) {
@@ -34,16 +36,20 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             createService(baseUrl).getDuck()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe { response -> onResponse(response.url, image) })
+                .subscribe { response ->
+                    onResponse(response.url, image)
+                    lastPicUrl = response.url
+                })
     }
-    fun doubleTap(){
+
+    fun doubleTap() {
         if (System.currentTimeMillis() - doubleClickLastTime < 300) {
             doubleClickLastTime = 0
             Toast.makeText(getApplication(), R.string.pic_saved, Toast.LENGTH_SHORT).show()
         } else doubleClickLastTime = System.currentTimeMillis()
     }
 
-    private fun onResponse(url: String, image: ImageView) {
+     fun onResponse(url: String, image: ImageView) {
         Glide
             .with(image)
             .load(url)

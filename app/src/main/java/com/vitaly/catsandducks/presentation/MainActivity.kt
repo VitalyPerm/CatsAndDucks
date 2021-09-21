@@ -14,6 +14,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        if(!viewModel.lastPicUrl.isNullOrEmpty()){
+           viewModel.onResponse(viewModel.lastPicUrl!!, binding.ivPic)
+        }
         binding.btnShowDuck.setOnClickListener {
             viewModel.loadDuck(binding.ivPic, Constants.DUCK_BASE_URL)
         }
