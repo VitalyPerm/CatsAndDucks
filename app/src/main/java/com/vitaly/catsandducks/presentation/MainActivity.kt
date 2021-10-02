@@ -1,6 +1,8 @@
 package com.vitaly.catsandducks.presentation
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.vitaly.catsandducks.data.Constants
@@ -14,18 +16,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
-        if(!viewModel.lastPicUrl.isNullOrEmpty()){
-           viewModel.loadPic(viewModel.lastPicUrl!!, binding.ivPic)
+        viewModel.loadData()
+        if (viewModel.firstLaunch) {
+            viewModel.savedPicUrl?.let { viewModel.loadPic(it, binding.ivPic) }
         }
-        binding.btnShowDuck.setOnClickListener {
-            viewModel.loadDuck(binding.ivPic, Constants.DUCK_BASE_URL)
+        if (!viewModel.firstLaunch) {
+            viewModel.lastPicUrl?.let { viewModel.loadPic(it, binding.ivPic) }
         }
+        binding.btnShowDuck.setOnClickListener { viewModel.loadDuck(binding.ivPic, Constants.DUCK_BASE_URL) }
+        binding.btnShowCat.setOnClickListener { viewModel.loadCat(binding.ivPic, Constants.CAT_BASE_URL) }
+        binding.ivPic.setOnClickListener { viewModel.doubleTap() }
+        binding.btnSave?.setOnClickListener { viewModel.saveData() }
+    }
 
-        binding.btnShowCat.setOnClickListener {
-            viewModel.loadCat(binding.ivPic, Constants.CAT_BASE_URL)
-        }
-        binding.ivPic.setOnClickListener {
-            viewModel.doubleTap()
-        }
+    override fun onResume() {
+        super.onResume()
+        viewModel.firstLaunch = false
+    }
+
+
+    companion object {
+        const val SHARED_PREFS_KEY = "shared_prefs_key"
+        const val URL = "url"
     }
 }

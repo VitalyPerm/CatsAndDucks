@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
+
     <ImageView
         android:id="@+id/iv_pic"
         android:layout_width="match_parent"
@@ -14,7 +15,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.001" />
+
     <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -22,6 +25,7 @@
         app:layout_constraintEnd_toEndOf="@id/iv_pic"
         app:layout_constraintStart_toStartOf="@id/iv_pic"
         app:layout_constraintTop_toBottomOf="@id/iv_pic">
+
         <Button
             android:id="@+id/btn_show_cat"
             android:layout_width="wrap_content"
@@ -29,6 +33,7 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/app_margin"
             android:text="@string/show_cat" />
+
         <Button
             android:id="@+id/btn_show_duck"
             android:layout_width="wrap_content"
@@ -36,5 +41,14 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/app_margin"
             android:text="@string/show_duck" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/app_margin"
+            android:text="Сохранить" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

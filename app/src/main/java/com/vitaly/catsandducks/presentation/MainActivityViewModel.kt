@@ -1,6 +1,7 @@
 package com.vitaly.catsandducks.presentation
 
 import android.app.Application
+import android.content.Context
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
@@ -17,7 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     private lateinit var compositeDisposable: CompositeDisposable
     private var doubleClickLastTime = 0L
+    var firstLaunch: Boolean = true
     var lastPicUrl: String? = null
+    var savedPicUrl: String? = null
     fun loadCat(image: ImageView, baseUrl: String) {
         compositeDisposable = CompositeDisposable()
         compositeDisposable.add(
@@ -29,7 +32,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                     lastPicUrl = response.url
                 })
     }
-
     fun loadDuck(image: ImageView, baseUrl: String) {
         compositeDisposable = CompositeDisposable()
         compositeDisposable.add(
@@ -63,5 +65,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit.create(Service::class.java)
+    }
+
+     fun saveData() {
+        val prefs = getApplication<Application>().getSharedPreferences(MainActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE)
+        prefs.edit().putString(MainActivity.URL, lastPicUrl).apply()
+    }
+
+     fun loadData() {
+        val prefs =  getApplication<Application>().getSharedPreferences(MainActivity.SHARED_PREFS_KEY, Context.MODE_PRIVATE)
+        savedPicUrl = prefs.getString(MainActivity.URL, "Нет сохраненных данных")
     }
 }
