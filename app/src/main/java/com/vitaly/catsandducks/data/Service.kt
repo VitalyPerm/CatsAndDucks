@@ -1,14 +1,12 @@
 package com.vitaly.catsandducks.data
 
-import io.reactivex.Observable
-import retrofit2.Call
+import io.reactivex.Single
 import retrofit2.http.GET
-import java.io.Serializable
 
 interface Service {
     @GET("random")
-    fun getDuck(): Observable<DuckResponse>
+    fun getDuck(): Single<DuckResponse>
 
     @GET("rest")
-    fun getCat(): Observable<CatResponse>
+    fun getCat(): Single<CatResponse>
 }

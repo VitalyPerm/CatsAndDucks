@@ -25,7 +25,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe { response ->
-                    onResponse(response.url, image)
+                    loadPic(response.url, image)
                     lastPicUrl = response.url
                 })
     }
@@ -37,7 +37,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe { response ->
-                    onResponse(response.url, image)
+                    loadPic(response.url, image)
                     lastPicUrl = response.url
                 })
     }
@@ -49,7 +49,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         } else doubleClickLastTime = System.currentTimeMillis()
     }
 
-     fun onResponse(url: String, image: ImageView) {
+     fun loadPic(url: String, image: ImageView) {
         Glide
             .with(image)
             .load(url)
