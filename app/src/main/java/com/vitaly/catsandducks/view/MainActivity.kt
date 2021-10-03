@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         if (!viewModel.firstLaunch) {
             binding.ivPic.loadImage(viewModel.lastPicUrl, viewModel.progressBar)
         }
-        binding.btnShowDuck.setOnClickListener { viewModel.loadDuck(binding.ivPic, Constants.DUCK_BASE_URL) }
-        binding.btnShowCat.setOnClickListener { viewModel.loadCat(binding.ivPic, Constants.CAT_BASE_URL) }
+        binding.btnShowDuck.setOnClickListener { viewModel.loadDuck(binding.ivPic) }
+        binding.btnShowCat.setOnClickListener { viewModel.loadCat(binding.ivPic) }
         binding.ivPic.setOnClickListener { viewModel.doubleTap() }
         binding.btnSave?.setOnClickListener { viewModel.saveData() }
     }
