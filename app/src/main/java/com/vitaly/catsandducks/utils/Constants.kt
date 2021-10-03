@@ -1,4 +1,4 @@
-package com.vitaly.catsandducks.data
+package com.vitaly.catsandducks.utils
 
 object Constants {
     const val DUCK_BASE_URL: String = "https://random-d.uk/api/"

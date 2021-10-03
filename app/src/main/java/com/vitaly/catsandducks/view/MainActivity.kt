@@ -1,12 +1,12 @@
-package com.vitaly.catsandducks.presentation
+package com.vitaly.catsandducks.view
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.vitaly.catsandducks.data.Constants
+import com.vitaly.catsandducks.utils.Constants
 import com.vitaly.catsandducks.databinding.ActivityMainBinding
+import com.vitaly.catsandducks.utils.loadImage
+import com.vitaly.catsandducks.viewmodel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
     lateinit var viewModel: MainActivityViewModel
@@ -18,10 +18,11 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
         viewModel.loadData()
         if (viewModel.firstLaunch) {
+            binding.ivPic.loadImage(viewModel.savedPicUrl, viewModel.progressBar)
             viewModel.savedPicUrl?.let { viewModel.loadPic(it, binding.ivPic) }
         }
         if (!viewModel.firstLaunch) {
-            viewModel.lastPicUrl?.let { viewModel.loadPic(it, binding.ivPic) }
+            binding.ivPic.loadImage(viewModel.lastPicUrl, viewModel.progressBar)
         }
         binding.btnShowDuck.setOnClickListener { viewModel.loadDuck(binding.ivPic, Constants.DUCK_BASE_URL) }
         binding.btnShowCat.setOnClickListener { viewModel.loadCat(binding.ivPic, Constants.CAT_BASE_URL) }
