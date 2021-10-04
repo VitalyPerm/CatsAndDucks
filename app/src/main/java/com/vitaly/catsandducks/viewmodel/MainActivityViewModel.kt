@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.vitaly.catsandducks.R
 import com.vitaly.catsandducks.di.DaggerApiComponent
 import com.vitaly.catsandducks.model.cat.Cat
@@ -61,7 +62,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     // With coroutines
     fun loadDuck() {
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val response = duckService.getDuck()
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
