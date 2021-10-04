@@ -9,7 +9,6 @@ import com.vitaly.catsandducks.R
 import com.vitaly.catsandducks.di.DaggerApiComponent
 import com.vitaly.catsandducks.model.cat.Cat
 import com.vitaly.catsandducks.model.cat.CatService
-import com.vitaly.catsandducks.model.duck.Duck
 import com.vitaly.catsandducks.model.duck.DuckService
 import com.vitaly.catsandducks.utils.getProgressDrawable
 import com.vitaly.catsandducks.utils.showToast
@@ -17,6 +16,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -37,6 +40,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var firstLaunch: Boolean = true
     val picture = MutableLiveData<String>()
     var savedPicUrl: String? = null
+
+    //With rx
     fun loadCat() {
         disposable.add(
             catService.getCat()
@@ -54,22 +59,20 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         )
     }
 
+    // With coroutines
     fun loadDuck() {
-        disposable.add(
-            duckService.getDuck()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<Duck>() {
-                    override fun onSuccess(t: Duck) {
-                        picture.value = t.url
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-                })
-        )
+        GlobalScope.launch(Dispatchers.IO) {
+            val response = duckService.getDuck()
+            if (response.isSuccessful) {
+                withContext(Dispatchers.Main) {
+                    picture.value = response.body()!!.url
+                }
+            } else {
+                showToast(getApplication(), response.errorBody().toString())
+            }
+        }
     }
+
 
     fun doubleTap() {
         if (System.currentTimeMillis() - doubleClickLastTime < 300) {

@@ -18,7 +18,6 @@ class ApiModule {
         return Retrofit.Builder()
             .baseUrl(Constants.DUCK_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(DuckApi::class.java)
     }

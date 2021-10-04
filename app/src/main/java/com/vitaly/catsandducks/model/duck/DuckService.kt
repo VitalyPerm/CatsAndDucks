@@ -1,7 +1,7 @@
 package com.vitaly.catsandducks.model.duck
 
 import com.vitaly.catsandducks.di.DaggerApiComponent
-import io.reactivex.Single
+import retrofit2.Response
 import javax.inject.Inject
 
 class DuckService {
@@ -13,7 +13,7 @@ class DuckService {
         DaggerApiComponent.create().injectDuckService(this)
     }
 
-    fun getDuck(): Single<Duck> {
+    suspend fun getDuck(): Response<Duck> {
         return duckApi.getDuck()
     }
 }
