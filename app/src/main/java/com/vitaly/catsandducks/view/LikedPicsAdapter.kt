@@ -14,9 +14,11 @@ class LikedPicsAdapter(private val listener: OnItemClickListener) : RecyclerView
 
     inner class LikedPicsViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         val pic: ImageView = view.findViewById(R.id.pic)
+        val delete: ImageView = view.findViewById(R.id.delete)
 
         init {
-            itemView.setOnClickListener(this)
+            delete.setOnClickListener(this)
+//            itemView.setOnClickListener(this)
         }
 
         override fun onClick(p0: View?) {

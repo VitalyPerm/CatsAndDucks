@@ -104,7 +104,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun initDatabase() {
-        dao = LikedDataBase.getInstance(getApplication()).getDao()
+        dao = LikedDataBase.getDatabaseInstance(getApplication()).getDao()
         getAll()
     }
 

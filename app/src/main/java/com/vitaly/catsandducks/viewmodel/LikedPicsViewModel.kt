@@ -15,7 +15,7 @@ class LikedPicsViewModel(application: Application) : AndroidViewModel(applicatio
     var likedPics: LiveData<List<LikedPicture>>? = null
 
     fun initDatabase() {
-        dao = LikedDataBase.getInstance(getApplication()).getDao()
+        dao = LikedDataBase.getDatabaseInstance(getApplication()).getDao()
         getAll()
     }
 

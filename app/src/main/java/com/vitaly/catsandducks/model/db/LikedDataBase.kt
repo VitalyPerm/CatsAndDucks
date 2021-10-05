@@ -10,21 +10,17 @@ abstract class LikedDataBase : RoomDatabase() {
     abstract fun getDao(): Dao
 
     companion object {
-        @Volatile
-        private var database: LikedDataBase? = null
+
+        private var db_instance: LikedDataBase? = null
 
         @Synchronized
-        fun getInstance(context: Context): LikedDataBase {
-            return if (database == null) {
-                database = Room.databaseBuilder(
-                    context,
-                    LikedDataBase::class.java,
-                    "db"
-                ).build()
-                database as LikedDataBase
-            } else database as LikedDataBase
+        fun getDatabaseInstance(context: Context): LikedDataBase {
+            if (db_instance == null) {
+               db_instance = Room.databaseBuilder(
+                   context.applicationContext, LikedDataBase::class.java, "db"
+               ).build()
+            }
+            return db_instance as LikedDataBase
         }
     }
-
-
 }
