@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.vitaly.catsandducks.databinding.ActivityLikedPicsBinding
+import com.vitaly.catsandducks.model.db.LikedPicture
 import com.vitaly.catsandducks.viewmodel.LikedPicsViewModel
 
-class LikedPicsActivity : AppCompatActivity() {
+class LikedPicsActivity : AppCompatActivity(), LikedPicsAdapter.OnItemClickListener {
     private lateinit var viewModel: LikedPicsViewModel
     private lateinit var binding: ActivityLikedPicsBinding
     private lateinit var recyclerView: RecyclerView
@@ -18,11 +19,16 @@ class LikedPicsActivity : AppCompatActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(LikedPicsViewModel::class.java)
         recyclerView = binding.rv
-        adapter = LikedPicsAdapter()
+        adapter = LikedPicsAdapter(this)
         recyclerView.adapter = adapter
         viewModel.initDatabase()
         viewModel.likedPics?.observe(this, {
             adapter.setList(it)
         })
+    }
+
+    override fun onItemClick(position: Int) {
+        viewModel.delete(LikedPicture(id = adapter.mListPics[position].id, url = adapter.mListPics[position].url))
+        adapter.notifyItemChanged(position)
     }
 }

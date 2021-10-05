@@ -1,22 +1,27 @@
 package com.vitaly.catsandducks.view
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.vitaly.catsandducks.R
 import com.vitaly.catsandducks.model.db.LikedPicture
 
-class LikedPicsAdapter() : RecyclerView.Adapter<LikedPicsAdapter.LikedPicsViewHolder>() {
-    private var mListPics = emptyList<LikedPicture>()
+class LikedPicsAdapter(private val listener: OnItemClickListener) : RecyclerView.Adapter<LikedPicsAdapter.LikedPicsViewHolder>() {
+     var mListPics = emptyList<LikedPicture>()
 
-    inner class LikedPicsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val url: TextView = view.findViewById(R.id.url)
+    inner class LikedPicsViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         val pic: ImageView = view.findViewById(R.id.pic)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+            if (adapterPosition != RecyclerView.NO_POSITION) listener.onItemClick(adapterPosition)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LikedPicsViewHolder {
@@ -25,7 +30,6 @@ class LikedPicsAdapter() : RecyclerView.Adapter<LikedPicsAdapter.LikedPicsViewHo
     }
 
     override fun onBindViewHolder(holder: LikedPicsViewHolder, position: Int) {
-        holder.url.text = holder.adapterPosition.toString()
         Glide
             .with(holder.pic)
             .load(mListPics[position].url)
@@ -37,5 +41,11 @@ class LikedPicsAdapter() : RecyclerView.Adapter<LikedPicsAdapter.LikedPicsViewHo
     fun setList(list: List<LikedPicture>) {
         mListPics = list.asReversed()
         notifyDataSetChanged()
+    }
+
+
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 }
