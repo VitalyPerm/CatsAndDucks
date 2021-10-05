@@ -1,5 +1,6 @@
 package com.vitaly.catsandducks.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         binding.btnShowCat.setOnClickListener { viewModel.loadCat() }
         binding.ivPic.setOnClickListener { viewModel.doubleTap() }
         binding.btnSave?.setOnClickListener { viewModel.saveData() }
+        binding.btnLikedPics?.setOnClickListener {
+            val i = Intent(this, LikedPicsActivity::class.java)
+            startActivity(i)
+        }
     }
 
     override fun onResume() {
@@ -41,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.likedPics?.observe(this, {
-            for(i in it){
+            for (i in it) {
                 Log.d("TAG", i.url)
             }
         })

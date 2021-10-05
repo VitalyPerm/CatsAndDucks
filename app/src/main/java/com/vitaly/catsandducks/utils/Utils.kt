@@ -26,6 +26,6 @@ fun ImageView.loadImage(uri: String?, progressDrawable: CircularProgressDrawable
         .into(this)
 }
 
-fun showToast(context: Context, msg:String){
+fun showToast(context: Context, msg: String) {
     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
