@@ -4,12 +4,16 @@ import android.app.Application
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.vitaly.catsandducks.R
 import com.vitaly.catsandducks.di.DaggerApiComponent
 import com.vitaly.catsandducks.model.cat.Cat
 import com.vitaly.catsandducks.model.cat.CatService
+import com.vitaly.catsandducks.model.db.Dao
+import com.vitaly.catsandducks.model.db.LikedDataBase
+import com.vitaly.catsandducks.model.db.LikedPicture
 import com.vitaly.catsandducks.model.duck.DuckService
 import com.vitaly.catsandducks.utils.getProgressDrawable
 import com.vitaly.catsandducks.utils.showToast
@@ -24,6 +28,8 @@ import javax.inject.Inject
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
     private val disposable = CompositeDisposable()
+    private lateinit var dao: Dao
+    var likedPics: LiveData<List<LikedPicture>>? = null
 
     @Inject
     lateinit var catService: CatService
@@ -41,22 +47,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val picture = MutableLiveData<String>()
     var savedPicUrl: String? = null
 
-    //With rx
     fun loadCat() {
-        disposable.add(
-            catService.getCat()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<Cat>() {
-                    override fun onSuccess(t: Cat) {
-                        picture.value = t.url
-                    }
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-                })
-        )
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = catService.getCat()
+            if (response.isSuccessful) {
+                withContext(Dispatchers.Main) {
+                    picture.value = response.body()?.url
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    showToast(getApplication(), response.errorBody().toString())
+                }
+            }
+        }
     }
 
     // With coroutines
@@ -65,10 +68,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             val response = duckService.getDuck()
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
-                    picture.value = response.body()!!.url
+                    picture.value = response.body()?.url
                 }
             } else {
-                showToast(getApplication(), response.errorBody().toString())
+                withContext(Dispatchers.Main) {
+                    showToast(getApplication(), response.errorBody().toString())
+                }
             }
         }
     }
@@ -78,6 +83,11 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         if (System.currentTimeMillis() - doubleClickLastTime < 300) {
             doubleClickLastTime = 0
             Toast.makeText(getApplication(), R.string.pic_saved, Toast.LENGTH_SHORT).show()
+            if (picture.value != null) {
+                viewModelScope.launch(Dispatchers.IO) {
+                    dao.insert(LikedPicture(url = picture.value!!))
+                }
+            }
         } else doubleClickLastTime = System.currentTimeMillis()
     }
 
@@ -93,6 +103,15 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         savedPicUrl = prefs.getString(URL, "")
     }
 
+    fun initDatabase() {
+        dao = LikedDataBase.getInstance(getApplication()).getDao()
+        getAll()
+    }
+
+    private fun getAll() {
+        likedPics = dao.getAll()
+    }
+
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
@@ -102,5 +121,4 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         const val SHARED_PREFS_KEY = "shared_prefs_key"
         const val URL = "url"
     }
-
 }

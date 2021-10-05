@@ -1,9 +1,11 @@
 package com.vitaly.catsandducks.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.vitaly.catsandducks.databinding.ActivityMainBinding
+import com.vitaly.catsandducks.utils.APP_ACTIVITY
 import com.vitaly.catsandducks.utils.loadImage
 import com.vitaly.catsandducks.viewmodel.MainActivityViewModel
 
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel.initDatabase()
         viewModel.loadData()
         observeViewModel()
         if (viewModel.firstLaunch) {
@@ -32,9 +35,20 @@ class MainActivity : AppCompatActivity() {
         viewModel.firstLaunch = false
     }
 
-    private fun observeViewModel(){
-        viewModel.picture.observe(this,{
-        binding.ivPic.loadImage(it, viewModel.progressBar)
+    private fun observeViewModel() {
+        viewModel.picture.observe(this, {
+            binding.ivPic.loadImage(it, viewModel.progressBar)
         })
+
+        viewModel.likedPics?.observe(this, {
+            for(i in it){
+                Log.d("TAG", i.url)
+            }
+        })
+//        viewModel.allPics.observe(this, {
+//            for (i in it) {
+//                Log.d("URL!", i.url)
+//            }
+//        })
     }
 }

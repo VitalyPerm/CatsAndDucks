@@ -6,7 +6,7 @@ import androidx.room.Dao
 
 @Dao
 interface Dao {
-    @Query("SELECT * FROM `table`")
+    @Query("SELECT * FROM likedpicture")
     fun getAll(): LiveData<List<LikedPicture>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

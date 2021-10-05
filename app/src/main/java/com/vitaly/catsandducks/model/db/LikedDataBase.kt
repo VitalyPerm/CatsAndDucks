@@ -12,17 +12,19 @@ abstract class LikedDataBase : RoomDatabase() {
     companion object {
         @Volatile
         private var database: LikedDataBase? = null
+
+        @Synchronized
+        fun getInstance(context: Context): LikedDataBase {
+            return if (database == null) {
+                database = Room.databaseBuilder(
+                    context,
+                    LikedDataBase::class.java,
+                    "db"
+                ).build()
+                database as LikedDataBase
+            } else database as LikedDataBase
+        }
     }
 
-    @Synchronized
-    fun getInstance(context: Context): LikedDataBase {
-        if (database == null) {
-            database = Room.databaseBuilder(
-                context,
-                LikedDataBase::class.java,
-                "db"
-            ).build()
-            return database as LikedDataBase
-        } else return database as LikedDataBase
-    }
+
 }
